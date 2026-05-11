@@ -4,15 +4,15 @@ The Age Game is a web game about guessing when everyday objects were made. Inste
 
 ## Live Demo
 
-Coming soon: Netlify deployment URL will be added here.
+Play the live Netlify deployment:
+
+[theagegame.netlify.app](https://theagegame.netlify.app/)
 
 ## Screenshots
 
-Screenshots will be captured from the deployed Netlify build once the live URL is available.
-
 | Timeline Mode | Older / Newer | Submit an Object |
 | --- | --- | --- |
-| Coming soon | Coming soon | Coming soon |
+| ![Timeline mode screenshot](assets/screenshots/timeline.png) | ![Older / Newer mode screenshot](assets/screenshots/older-newer.png) | ![Submit an Object screenshot](assets/screenshots/submit-object.png) |
 
 ## Game Modes
 
