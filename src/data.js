@@ -8,7 +8,7 @@ const GAME_CONFIG = {
   revealExplanationEnabled: true,
   aiModeEnabled: true,
   uploadsEnabled: true,
-  seedObjectsEnabled: true,
+  seedObjectsEnabled: false,
   supabase: {
     enabled: true,
     url: "https://eijahowxbexgqplhniud.supabase.co",

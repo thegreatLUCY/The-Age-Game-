@@ -247,6 +247,24 @@ img {
   box-shadow: var(--shadow);
 }
 
+.empty-state {
+  padding: 44px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.empty-state h2 {
+  max-width: 680px;
+  margin: 0 auto;
+  font-family: "Funnel Sans", Inter, sans-serif;
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  line-height: 1.08;
+}
+
 .object-stage {
   overflow: hidden;
 }

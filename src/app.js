@@ -24,7 +24,7 @@ let state = {
   submitMessage: "",
   hintIndex: 0,
   serverObjects: [],
-  backendLoading: false,
+  backendLoading: Boolean(backend?.isReady()),
   backendMessage: "",
   backendError: "",
   user: null,
@@ -699,13 +699,16 @@ function dotRows() {
 }
 
 function render() {
-  if (!state.timelineObjectId) {
-    state.timelineObjectId = chooseRandom(getTimelinePool()).id;
+  const timelinePool = getTimelinePool();
+  const imaginedPool = getImaginedPool();
+
+  if (!state.timelineObjectId && timelinePool.length) {
+    state.timelineObjectId = chooseRandom(timelinePool).id;
   }
-  if (!state.imaginedObjectId) {
-    state.imaginedObjectId = chooseRandom(getImaginedPool()).id;
+  if (!state.imaginedObjectId && imaginedPool.length) {
+    state.imaginedObjectId = chooseRandom(imaginedPool).id;
   }
-  if (!state.olderPair) {
+  if (!state.olderPair && timelinePool.length >= 2) {
     state.olderPair = makeOlderPair(state.olderDifficulty);
   }
 
@@ -776,7 +779,13 @@ function renderAuthForm() {
 
 function renderModeButton(mode) {
   const selected = state.mode === mode.id;
-  const disabled = mode.id === "imagined" && !GAME_CONFIG.aiModeEnabled;
+  const timelineCount = getTimelinePool().length;
+  const imaginedCount = getImaginedPool().length;
+  const disabled =
+    (mode.id === "timeline" && !timelineCount) ||
+    (mode.id === "olderNewer" && timelineCount < 2) ||
+    (mode.id === "daily" && !timelineCount) ||
+    (mode.id === "imagined" && (!GAME_CONFIG.aiModeEnabled || !imaginedCount));
   return `
     <button class="mode-tab ${selected ? "is-active" : ""}" data-mode="${mode.id}" ${disabled ? "disabled" : ""}>
       <span class="mode-tab__full">${mode.label}</span>
@@ -786,11 +795,36 @@ function renderModeButton(mode) {
 }
 
 function renderCurrentMode() {
+  const timelineCount = getTimelinePool().length;
+  const imaginedCount = getImaginedPool().length;
+
+  if (state.mode !== "submit" && state.backendLoading && !timelineCount) {
+    return renderEmptyState("Loading objects", "Loading approved objects from Supabase.");
+  }
+  if (state.mode === "imagined" && !imaginedCount) {
+    return renderEmptyState("Imagined Era", "No imagined-era objects are approved yet.");
+  }
+  if (state.mode === "olderNewer" && timelineCount < 2) {
+    return renderEmptyState("Older / Newer", "Add at least two approved objects to play this mode.");
+  }
+  if ((state.mode === "timeline" || state.mode === "daily") && !timelineCount) {
+    return renderEmptyState("Timeline", "No approved objects are available yet.");
+  }
+
   if (state.mode === "olderNewer") return renderOlderNewer();
   if (state.mode === "daily") return renderDaily();
   if (state.mode === "submit") return renderSubmit();
   if (state.mode === "imagined") return renderTimelineLike("imagined");
   return renderTimelineLike("timeline");
+}
+
+function renderEmptyState(eyebrow, message) {
+  return `
+    <section class="empty-state">
+      <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+      <h2>${escapeHtml(message)}</h2>
+    </section>
+  `;
 }
 
 function renderTimelineLike(kind) {
